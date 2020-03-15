@@ -20,8 +20,10 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "@websanova/vue-auth": "^2.22.0-beta",
         "element-ui": "^2.13.0",
         "vue": "^2.6.11",
+        "vue-axios": "^2.1.5",
         "vue-router": "^3.1.6"
     }
 }

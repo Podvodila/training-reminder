@@ -13,6 +13,11 @@
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}">
+
+        <!-- Scripts -->
+        <script>
+            window.@include('includes.common-js-variables')
+        </script>
     </head>
     <body>
         <div id="app"></div>
