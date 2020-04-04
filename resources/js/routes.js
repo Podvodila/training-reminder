@@ -7,7 +7,34 @@ import Statistics from '@/js/components/Statistics';
 import Register from '@/js/components/auth/Register';
 import Login from "@/js/components/auth/Login";
 
+import methods from "@/js/includes/utils";
+
 Vue.use(VueRouter);
+
+const redirectIfNotAuth = (to, from, next) => {
+    methods.waitWhile('!window.Vue', () => {
+        if (!window.Vue.$auth.check()) {
+            next({
+                path: '/login',
+                query: { redirect: to.fullPath }
+            })
+        } else {
+            next()
+        }
+    });
+};
+
+const redirectIfAuth = (to, from, next) => {
+    methods.waitWhile('!window.Vue', () => {
+        if (window.Vue.$auth.check()) {
+            next({
+                name: 'Statistics'
+            })
+        } else {
+            next()
+        }
+    });
+};
 
 const router = new VueRouter({
     mode: 'history',
@@ -15,13 +42,14 @@ const router = new VueRouter({
         {
             path: '',
             component: Home,
+            menu: true,
             children: [
-                { path: '/', component: Statistics, name: 'Statistics' },
-                { path: '/about', component: About, name: 'about' },
+                { path: '/', component: Statistics, name: 'Statistics', beforeEnter: redirectIfNotAuth },
+                { path: '/about', component: About, name: 'about', beforeEnter: redirectIfNotAuth },
+                { path: '/register', component: Register, name: 'Register', beforeEnter: redirectIfAuth },
+                { path: '/login', component: Login, name: 'Login', beforeEnter: redirectIfAuth },
             ],
         },
-        { path: '/register', component: Register, name: 'Register' },
-        { path: '/login', component: Login, name: 'Login' },
     ],
 });
 

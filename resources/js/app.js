@@ -21,10 +21,8 @@ Vue.use(VueAuth, authParams);
 Vue.axios.defaults.baseURL = window.Laravel.appUrl;
 Vue.axios.defaults.withCredentials = true;
 
-const app = new Vue({
+window.Vue = new Vue({
     el: '#app',
     router: Routes,
     render: h => h(App),
 });
-
-export default app;
