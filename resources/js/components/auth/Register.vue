@@ -65,7 +65,8 @@
 
 <style lang="scss" scoped>
     .register-page {
-        height: 100vh;
+        height: calc(100vh - 60px);
+
         .register-form-container {
             display: flex;
             justify-content: center;

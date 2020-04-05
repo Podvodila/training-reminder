@@ -70,7 +70,7 @@
 
 <style lang="scss" scoped>
     .login-page {
-        height: 100vh;
+        height: calc(100vh - 60px);
         .login-form-container {
             display: flex;
             justify-content: center;
