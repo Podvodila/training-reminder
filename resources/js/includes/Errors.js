@@ -78,8 +78,8 @@ class Errors {
      *
      * @param {string|null} field
      */
-    clear(field) {
-        if (! field) {
+    clear(field = null) {
+        if (!field) {
             this.errors = {};
 
             return;

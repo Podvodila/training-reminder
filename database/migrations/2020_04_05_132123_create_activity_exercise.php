@@ -18,6 +18,7 @@ class CreateActivityExercise extends Migration
             $table->foreignId('exercise_id')->constrained()->onDelete('cascade');
             $table->unsignedTinyInteger('default_sets');
             $table->unsignedTinyInteger('default_repetitions');
+            $table->unsignedTinyInteger('progression_type');
             $table->timestamps();
         });
     }

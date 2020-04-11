@@ -1,12 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models\Activity;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
 {
     protected $fillable = [
+        'name',
         'interval_minutes',
         'available_time_from',
         'available_time_to',

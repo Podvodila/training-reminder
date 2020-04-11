@@ -5,6 +5,13 @@ let methods = {
         }
         callback();
     },
+    mergeExistingFields(source, fields) {
+        return _.assign(source, _.pick(fields, _.keys(source)));
+    },
+    resetForm() {
+        this.form = _.cloneDeep(this.originForm);
+        this.errors.clear();
+    },
 };
 
 export default methods;

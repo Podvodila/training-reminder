@@ -6,7 +6,13 @@ use Illuminate\Http\Request;
 
 class SinglePageController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         return view('app');
+    }
+
+    public function getUser(Request $request)
+    {
+        return $request->user();
     }
 }

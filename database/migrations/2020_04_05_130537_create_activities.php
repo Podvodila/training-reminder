@@ -15,12 +15,12 @@ class CreateActivities extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->integer('interval_minutes');
             $table->time('available_time_from');
             $table->time('available_time_to');
             $table->unsignedTinyInteger('status');
             $table->unsignedTinyInteger('exercises_per_time');
-            $table->unsignedTinyInteger('progression_type');
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });

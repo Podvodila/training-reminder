@@ -3,6 +3,7 @@ import Vue from 'vue';
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import { default as elementLocale } from 'element-ui/lib/locale/lang/en';
 
 import VueAxios from 'vue-axios';
 import VueAuth from '@websanova/vue-auth';
@@ -14,7 +15,7 @@ import App from '@/js/views/App'
 
 Vue.router = Routes;
 
-Vue.use(ElementUI);
+Vue.use(ElementUI, { locale: elementLocale });
 Vue.use(VueAxios, window.axios);
 Vue.use(VueAuth, authParams);
 
