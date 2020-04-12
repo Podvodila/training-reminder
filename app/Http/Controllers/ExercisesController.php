@@ -14,6 +14,12 @@ class ExercisesController extends Controller
         return response()->json($list);
     }
 
+    public function get(Request $request)
+    {
+        $exercises = Exercise::all();
+        return response()->json($exercises);
+    }
+
     public function show(Exercise $exercise)
     {
         return response()->json($exercise);

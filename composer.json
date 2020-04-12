@@ -16,6 +16,7 @@
         "laravel/airlock": "^1.0",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
+        "longman/telegram-bot": "^0.62.0",
         "tightenco/ziggy": "^0.9.0"
     },
     "require-dev": {

@@ -25,6 +25,7 @@ Route::middleware('auth:airlock')->group(function () {
 
     Route::group(['prefix' => 'exercises'], function() {
         Route::get('/', 'ExercisesController@index')->name('exercises.index');
+        Route::get('/get', 'ExercisesController@get')->name('exercises.get');
         Route::get('/{exercise}', 'ExercisesController@show')->name('exercises.show');
         Route::post('/', 'ExercisesController@store')->name('exercises.store');
         Route::put('/{exercise}', 'ExercisesController@update')->name('exercises.update');
@@ -32,10 +33,15 @@ Route::middleware('auth:airlock')->group(function () {
     });
 
     Route::group(['prefix' => 'activities'], function() {
-        Route::get('/', 'ActivitiesController@index')->name('activity.index');
-        Route::get('/{activity}', 'ActivitiesController@show')->name('activity.show');
-        Route::post('/', 'ActivitiesController@store')->name('activity.store');
-        Route::put('/{activity}', 'ActivitiesController@update')->name('activity.update');
-        Route::delete('/{activity}', 'ActivitiesController@destroy')->name('activity.destroy');
+        Route::get('/', 'ActivitiesController@index')->name('activities.index');
+        Route::get('/{activity}', 'ActivitiesController@show')->name('activities.show');
+        Route::post('/', 'ActivitiesController@store')->name('activities.store');
+        Route::post('/toggle-status/{activity}', 'ActivitiesController@toggleStatus')->name('activities.toggle-status');
+        Route::put('/{activity}', 'ActivitiesController@update')->name('activities.update');
+        Route::delete('/{activity}', 'ActivitiesController@destroy')->name('activities.destroy');
     });
+});
+
+Route::group(['prefix' => 'telegram'], function() {
+    Route::post('/hook', 'TelegramBotController@hook')->name('telegram-bot.hook');
 });

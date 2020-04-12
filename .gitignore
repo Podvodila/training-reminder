@@ -15,3 +15,4 @@ yarn-error.log
 /public/css/
 /storage/
 /public/storage
+/ngrok.exe

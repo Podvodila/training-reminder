@@ -3,7 +3,21 @@
 
 // Variables
 @import 'variables';
+@import "~element-ui/packages/theme-chalk/src/index";
 
 body {
     font-family: $font-family-sans-serif;
+}
+
+.color-success {
+    color: $--color-success;
+}
+.color-warning {
+    color: $--color-warning;
+}
+.color-danger {
+    color: $--color-danger;
+}
+.color-info {
+    color: $--color-info;
 }

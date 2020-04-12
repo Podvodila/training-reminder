@@ -9,6 +9,7 @@ import Register from '@/js/components/auth/Register';
 import Login from "@/js/components/auth/Login";
 
 import methods from "@/js/includes/utils";
+import NotFound from "@/js/views/NotFound";
 
 Vue.use(VueRouter);
 
@@ -56,6 +57,7 @@ const router = new VueRouter({
                 { path: '/login',       component: Login,       name: 'Login',                                    beforeEnter: redirectIfAuth },
             ],
         },
+        { path: '*',       component: NotFound },
     ],
 });
 

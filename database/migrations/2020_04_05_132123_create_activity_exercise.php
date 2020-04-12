@@ -14,10 +14,12 @@ class CreateActivityExercise extends Migration
     public function up()
     {
         Schema::create('activity_exercise', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('activity_id')->constrained()->onDelete('cascade');
             $table->foreignId('exercise_id')->constrained()->onDelete('cascade');
-            $table->unsignedTinyInteger('default_sets');
-            $table->unsignedTinyInteger('default_repetitions');
+            $table->unique(['activity_id', 'exercise_id']);
+            $table->unsignedTinyInteger('default_sets')->nullable();
+            $table->unsignedTinyInteger('default_repetitions')->nullable();
             $table->unsignedTinyInteger('progression_type');
             $table->timestamps();
         });

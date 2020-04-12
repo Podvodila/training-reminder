@@ -31,7 +31,7 @@
                 class="pull-right">
             </el-pagination>
         </div>
-        <exercise-form-modal ref="modal"></exercise-form-modal>
+        <exercise-form-modal ref="modal" @submitted="fetchExercises"></exercise-form-modal>
     </div>
 </template>
 
@@ -72,13 +72,12 @@
                     cancelButtonText: 'Cancel',
                     type: 'warning'
                 }).then(() => {
-                    this.deleteExerciseModal(id);
+                    this.deleteExercise(id);
                 }).catch(() => {
                     //
                 });
-
             },
-            deleteExerciseModal(id) {
+            deleteExercise(id) {
                 destroyExercise(id).then(response => {
                     this.fetchExercises();
                 });

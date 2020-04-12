@@ -23,7 +23,7 @@
                 this.$refs.modal.open();
             },
             refreshList() {
-                //todo
+                this.$refs.list.fetchActivities();
             },
         },
         components: {

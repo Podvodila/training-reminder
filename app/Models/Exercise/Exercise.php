@@ -2,6 +2,7 @@
 
 namespace App\Models\Exercise;
 
+use App\Models\Activity\Activity;
 use Illuminate\Database\Eloquent\Model;
 
 class Exercise extends Model
@@ -23,4 +24,9 @@ class Exercise extends Model
             'title' => 'Sport',
         ],
     ];
+
+    public function activities()
+    {
+        return $this->belongsToMany(Activity::class)->withPivot(['default_sets', 'default_repetitions', 'progression_type']);
+    }
 }

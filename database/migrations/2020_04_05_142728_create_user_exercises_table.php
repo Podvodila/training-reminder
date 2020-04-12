@@ -15,13 +15,14 @@ class CreateUserExercisesTable extends Migration
     {
         Schema::create('user_exercises', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('activity_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('activity_exercise_id')->nullable()->constrained('activity_exercise')->onDelete('cascade');
             $table->unsignedTinyInteger('difficulty_type')->nullable();
             $table->dateTime('notify_at');
+            $table->boolean('is_notified')->default(false);
             $table->dateTime('done_at')->nullable();
             $table->unsignedTinyInteger('status');
-            $table->unsignedTinyInteger('sets');
-            $table->unsignedTinyInteger('repetitions');
+            $table->unsignedTinyInteger('sets')->nullable();
+            $table->unsignedTinyInteger('repetitions')->nullable();
             $table->timestamps();
         });
     }
