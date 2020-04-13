@@ -25,6 +25,7 @@ class TelegramBotController extends Controller
     {
         try {
             //todo
+            //Log::info(TelegramRequest::getInput());
             $this->telegram->handle();
         } catch (TelegramException $e) {
             Log::error($e->getMessage());

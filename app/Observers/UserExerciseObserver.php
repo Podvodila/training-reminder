@@ -17,6 +17,7 @@ class UserExerciseObserver
     public function created(UserExercise $userExercise)
     {
         UserExerciseTelegramNotification::dispatch($userExercise)->delay($userExercise->notify_at);
+        //UserExerciseTelegramNotification::dispatch($userExercise); //TODO: uncomment for test
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Models\Activity;
 
 use App\Models\ActivityExercise\ActivityExercise;
 use App\Models\Exercise\Exercise;
+use App\Models\User\User;
 use App\Models\UserExercise\UserExercise;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -43,6 +44,11 @@ class Activity extends Model
             'title' => 'Auto',
         ],
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function exercises()
     {

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\UserExercise\UserExercise;
+use App\Services\Telegram\Telegram;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,13 +31,18 @@ class UserExerciseTelegramNotification implements ShouldQueue
     /**
      * Execute the job.
      *
+     * @param Telegram $telegram
      * @return void
      */
-    public function handle()
+    public function handle(Telegram $telegram)
     {
-        //todo
-        Log::info("Notified through telegram: " . now());
-        $this->userExercise->is_notified = true;
-        $this->userExercise->save();
+        try {
+            $telegram->sendExerciseNotification($this->userExercise);
+            Log::info("Notified through telegram: userExerciseId - " . $this->userExercise->id);
+            $this->userExercise->is_notified = true;
+            $this->userExercise->save();
+        } catch (\Exception $e) {
+            Log::error("Error in UserExerciseTelegramNotification job: " . $e->getMessage());
+        }
     }
 }
