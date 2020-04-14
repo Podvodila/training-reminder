@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Jobs\UserExerciseTelegramNotification;
 use App\Models\Activity\Activity;
 use App\Models\UserExercise\UserExercise;
+use Illuminate\Support\Facades\Log;
 
 class UserExerciseObserver
 {
@@ -28,12 +29,30 @@ class UserExerciseObserver
      */
     public function updated(UserExercise $userExercise)
     {
-        if ($userExercise->isDirty('done_at')) {
+        if ($this->isNewExercisesShouldBeCreated($userExercise)) {
             $activity = $userExercise->activity_exercise->activity;
 
-            if (!$activity->user_exercises()->whereNull('done_at')->exists() && $activity->status === Activity::STATUS_ACTIVE) {
-                $activity->createUserExercises();
-            }
+            $activity->createUserExercises();
         }
+    }
+
+    private function isNewExercisesShouldBeCreated(UserExercise $userExercise)
+    {
+        $result = $userExercise->isDirty('done_at');
+        if (!$result) {
+            $result = $userExercise->isDirty('status') && $userExercise->status === UserExercise::STATUS_ABANDONED;
+        }
+        if ($result) {
+            $activity = $userExercise->activity_exercise->activity;
+            $result = !$activity
+                    ->user_exercises()
+                    ->where(function ($query) {
+                        return $query->whereNull('done_at')
+                            ->where('status', '!=', UserExercise::STATUS_ABANDONED);
+                    })
+                    ->exists()
+                && $activity->status === Activity::STATUS_ACTIVE;
+        }
+        return $result;
     }
 }

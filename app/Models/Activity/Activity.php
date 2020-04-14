@@ -52,7 +52,13 @@ class Activity extends Model
 
     public function exercises()
     {
-        return $this->belongsToMany(Exercise::class)->withPivot(['id', 'default_sets', 'default_repetitions', 'progression_type']);
+        return $this->belongsToMany(Exercise::class)->withPivot([
+            'id',
+            'default_sets',
+            'default_repetitions',
+            'progression_type',
+            'max_reps_per_set',
+        ]);
     }
 
     public function user_exercises()
@@ -109,21 +115,13 @@ class Activity extends Model
                 ];
                 if ($existedUserExercise->activity_exercise->exercise->type === Exercise::TYPE_SPORT) {
                     //todo: handle max repetitions per set
-                    $userExerciseToCreate['sets'] = $existedUserExercise['sets']; //todo
-                    switch ($existedUserExercise['difficulty_type']) {
-                        case UserExercise::DIFFICULTY_TYPE_EASY:
-                            $userExerciseToCreate['repetitions'] = ceil($existedUserExercise['repetitions'] * 1.1);
-                            break;
-                        case UserExercise::DIFFICULTY_TYPE_NORMAL:
-                            $userExerciseToCreate['repetitions'] = ceil($existedUserExercise['repetitions'] * 1.05);
-                            break;
-                        case UserExercise::DIFFICULTY_TYPE_VERY_HARD:
-                            $userExerciseToCreate['repetitions'] = floor($existedUserExercise['repetitions'] * 0.95);
-                            break;
-                        case UserExercise::DIFFICULTY_TYPE_HARD:
-                        default:
-                            $userExerciseToCreate['repetitions'] = $existedUserExercise['repetitions'];
-                            break;
+                    $userExerciseToCreate['sets'] = $existedUserExercise['sets'];
+                    $userExerciseToCreate['repetitions'] = $existedUserExercise['repetitions'];
+                    if ($existedUserExercise->activity_exercise->progression_type === Activity::PROGRESSION_TYPE_AUTO) {
+                        $progressedData = $this->calculateAutoProgression($existedUserExercise);
+
+                        $userExerciseToCreate['sets'] = $progressedData['sets'];
+                        $userExerciseToCreate['repetitions'] = $progressedData['repetitions'];
                     }
                 }
                 array_push($userExercisesToCreate, $userExerciseToCreate);
@@ -135,5 +133,32 @@ class Activity extends Model
         }
 
         return $userExercisesToCreate;
+    }
+
+    private function calculateAutoProgression($userExercise)
+    {
+        $result = [
+            'sets' => $userExercise['sets'],
+            'repetitions' => $userExercise['repetitions'],
+        ];
+        switch ($userExercise['difficulty_type']) {
+            case UserExercise::DIFFICULTY_TYPE_EASY:
+                $result['repetitions'] = ceil($result['repetitions'] * 1.1);
+                break;
+            case UserExercise::DIFFICULTY_TYPE_NORMAL:
+                $result['repetitions'] = ceil($result['repetitions'] * 1.05);
+                break;
+            case UserExercise::DIFFICULTY_TYPE_VERY_HARD:
+                $result['repetitions'] = floor($result['repetitions'] * 0.95);
+                break;
+        }
+
+        $maxRepsPerSet = $userExercise->activity_exercise->max_reps_per_set;
+        if ($maxRepsPerSet && $result['repetitions'] > $maxRepsPerSet) {
+            $result['repetitions'] = ceil(($result['repetitions'] * $result['sets']) / ($result['sets'] + 1));
+            $result['sets'] += 1;
+        }
+
+        return $result;
     }
 }

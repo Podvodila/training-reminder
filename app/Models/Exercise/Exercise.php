@@ -27,6 +27,11 @@ class Exercise extends Model
 
     public function activities()
     {
-        return $this->belongsToMany(Activity::class)->withPivot(['default_sets', 'default_repetitions', 'progression_type']);
+        return $this->belongsToMany(Activity::class)->withPivot([
+            'default_sets',
+            'default_repetitions',
+            'progression_type',
+            'max_reps_per_set',
+        ]);
     }
 }

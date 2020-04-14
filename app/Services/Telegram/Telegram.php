@@ -2,6 +2,7 @@
 
 namespace App\Services\Telegram;
 
+use App\Models\Activity\Activity;
 use App\Models\UserExercise\UserExercise;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -52,9 +53,14 @@ class Telegram
             ['text' => 'Give Up', 'callback_data' => "userexercisemarkstatus@$userExercise->id " . UserExercise::STATUS_ABANDONED],
         ];
 
+        $text = "It's time to:" . PHP_EOL . "$exercise->name";
+        if ($userExercise->activity_exercise->progression_type === Activity::PROGRESSION_TYPE_AUTO) {
+            $text .= ',' . PHP_EOL . "$userExercise->sets sets, $userExercise->repetitions reps";
+        }
+
         $data = [
             'chat_id' => $user->telegram_chat_id,
-            'text' => "It's time to:" . PHP_EOL . "$exercise->name," . PHP_EOL . "$userExercise->sets sets, $userExercise->repetitions reps",
+            'text' => $text,
             'reply_markup' => new InlineKeyboard(['inline_keyboard' => [$inline_keyboard]]),
         ];
 

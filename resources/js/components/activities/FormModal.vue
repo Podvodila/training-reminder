@@ -55,7 +55,9 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12" :offset="1">
-                                <el-form-item label="Progression Type" :error="errors.get('exercises.' + index + '.progression_type')">
+                                <el-form-item v-if="isSportExercise(exercise.exercise_id)"
+                                              label="Progression Type"
+                                              :error="errors.get('exercises.' + index + '.progression_type')">
                                     <el-select v-model="exercise.progression_type">
                                         <el-option
                                             :key="key"
@@ -67,7 +69,7 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <el-row v-if="isSportExercise(exercise.exercise_id)">
+                        <el-row v-if="exercise.progression_type === laravel.Activity.PROGRESSION_TYPE_AUTO">
                             <el-col :span="11">
                                 <el-form-item label="Default Sets">
                                     <el-input-number v-model="exercise.default_sets" :min="1" :max="100"></el-input-number>
@@ -76,6 +78,11 @@
                             <el-col :span="12" :offset="1">
                                 <el-form-item label="Default Repetitions">
                                     <el-input-number v-model="exercise.default_repetitions" :min="1" :max="500"></el-input-number>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="11">
+                                <el-form-item label="Max Reps Per Set">
+                                    <el-input-number v-model="exercise.max_reps_per_set" :min="1" :max="100"></el-input-number>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -100,9 +107,10 @@
         data() {
             const exercise = {
                 exercise_id: null,
-                progression_type: null,
+                progression_type: Laravel.Activity.PROGRESSION_TYPE_STATIC,
                 default_sets: null,
                 default_repetitions: null,
+                max_reps_per_set: null,
             };
 
             const form = {
