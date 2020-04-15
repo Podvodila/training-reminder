@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'auth'], function() {
-    Route::post('/register', 'auth\AuthController@register')->name('auth.register');
-    Route::post('/login', 'auth\AuthController@login')->name('auth.login');
-    Route::post('/logout', 'auth\AuthController@logout')->name('auth.logout');
+    Route::post('/register', 'Auth\AuthController@register')->name('auth.register');
+    Route::post('/login', 'Auth\AuthController@login')->name('auth.login');
+    Route::post('/logout', 'Auth\AuthController@logout')->name('auth.logout');
 });
 
 Route::middleware('auth:airlock')->group(function () {
