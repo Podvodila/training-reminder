@@ -13,19 +13,6 @@ class UserExerciseObserver
      * Handle the user exercise "created" event.
      *
      * @param  UserExercise  $userExercise
-     * @return bool|void
-     */
-    public function creating(UserExercise $userExercise)
-    {
-        if (!$this->isAvailableForCreation($userExercise)) {
-            return false;
-        }
-    }
-
-    /**
-     * Handle the user exercise "created" event.
-     *
-     * @param  UserExercise  $userExercise
      * @return void
      */
     public function created(UserExercise $userExercise)
@@ -66,11 +53,5 @@ class UserExerciseObserver
                 && $activity->status === Activity::STATUS_ACTIVE;
         }
         return $result;
-    }
-
-    private function isAvailableForCreation(UserExercise $userExercise)
-    {
-        $activity = $userExercise->activity_exercise->activity;
-        return now()->between($activity->available_time_from, $activity->available_time_to);
     }
 }

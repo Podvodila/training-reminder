@@ -121,9 +121,14 @@ class Activity extends Model
 
     private function generateExercise(Exercise $exercise, UserExercise $userExercise = null)
     {
+        $notifyAt = now()->addMinutes($this->interval_minutes);
+        if (!$notifyAt->between($this->available_time_from, $this->available_time_to)) {
+            $notifyToday = Carbon::createFromTimeString($this->available_time_from);
+            $notifyAt = $notifyAt->lt($notifyToday) ? $notifyToday : $notifyToday->addDay();
+        }
         $userExerciseToCreate = [
             'activity_exercise_id' => $exercise->pivot ? $exercise->pivot->id : $userExercise['activity_exercise_id'],
-            'notify_at' => now()->addMinutes($this->interval_minutes),
+            'notify_at' => $notifyAt,
             'status' => UserExercise::STATUS_WAITING,
         ];
 
