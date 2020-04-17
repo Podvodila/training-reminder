@@ -50,6 +50,9 @@ class Activity extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function exercises()
     {
         return $this->belongsToMany(Exercise::class)->withPivot([
@@ -83,22 +86,18 @@ class Activity extends Model
     {
         $userExercisesToCreate = [];
         $allExercises = $this->exercises;
-        $existedUserExercises = $this->user_exercises()->orderBy('done_at', 'desc')->get()->unique('activity_exercise_id')->sortBy('done_at');
+        $existedUserExercises = $this
+            ->user_exercises()
+            ->orderBy('done_at', 'desc')
+            ->get()
+            ->unique('activity_exercise_id')
+            ->sortBy('done_at');
 
         foreach ($allExercises as $exercise) {
             if (in_array($exercise->pivot->id, $existedUserExercises->pluck('activity_exercise_id')->toArray())) {
                 continue;
             }
-            $userExerciseToCreate = [
-                'activity_exercise_id' => $exercise->pivot->id,
-                'notify_at' => now()->addMinutes($this->interval_minutes),
-                'status' => UserExercise::STATUS_WAITING,
-            ];
-
-            if ($exercise->type === Exercise::TYPE_SPORT) {
-                $userExerciseToCreate['sets'] = $exercise->pivot->default_sets;
-                $userExerciseToCreate['repetitions'] = $exercise->pivot->default_repetitions;
-            }
+            $userExerciseToCreate = $this->generateExercise($exercise);
             array_push($userExercisesToCreate, $userExerciseToCreate);
 
             if (count($userExercisesToCreate) >= $this->exercises_per_time) {
@@ -108,22 +107,7 @@ class Activity extends Model
 
         if (count($userExercisesToCreate) < $this->exercises_per_time) {
             foreach ($existedUserExercises as $existedUserExercise) {
-                $userExerciseToCreate = [
-                    'activity_exercise_id' => $existedUserExercise['activity_exercise_id'],
-                    'notify_at' => now()->addMinutes($this->interval_minutes),
-                    'status' => UserExercise::STATUS_WAITING,
-                ];
-                if ($existedUserExercise->activity_exercise->exercise->type === Exercise::TYPE_SPORT) {
-                    //todo: handle max repetitions per set
-                    $userExerciseToCreate['sets'] = $existedUserExercise['sets'];
-                    $userExerciseToCreate['repetitions'] = $existedUserExercise['repetitions'];
-                    if ($existedUserExercise->activity_exercise->progression_type === Activity::PROGRESSION_TYPE_AUTO) {
-                        $progressedData = $this->calculateAutoProgression($existedUserExercise);
-
-                        $userExerciseToCreate['sets'] = $progressedData['sets'];
-                        $userExerciseToCreate['repetitions'] = $progressedData['repetitions'];
-                    }
-                }
+                $userExerciseToCreate = $this->generateExercise($existedUserExercise->activity_exercise->exercise, $existedUserExercise);
                 array_push($userExercisesToCreate, $userExerciseToCreate);
 
                 if (count($userExercisesToCreate) >= $this->exercises_per_time) {
@@ -133,6 +117,32 @@ class Activity extends Model
         }
 
         return $userExercisesToCreate;
+    }
+
+    private function generateExercise(Exercise $exercise, UserExercise $userExercise = null)
+    {
+        $userExerciseToCreate = [
+            'activity_exercise_id' => $exercise->pivot ? $exercise->pivot->id : $userExercise['activity_exercise_id'],
+            'notify_at' => now()->addMinutes($this->interval_minutes),
+            'status' => UserExercise::STATUS_WAITING,
+        ];
+
+        if ($exercise->type === Exercise::TYPE_SPORT) {
+            if ($userExercise) {
+                $userExerciseToCreate['sets'] = $userExercise['sets'];
+                $userExerciseToCreate['repetitions'] = $userExercise['repetitions'];
+                if ($userExercise->activity_exercise->progression_type === Activity::PROGRESSION_TYPE_AUTO) {
+                    $progressedData = $this->calculateAutoProgression($userExercise);
+
+                    $userExerciseToCreate['sets'] = $progressedData['sets'];
+                    $userExerciseToCreate['repetitions'] = $progressedData['repetitions'];
+                }
+            } else {
+                $userExerciseToCreate['sets'] = $exercise->pivot->default_sets;
+                $userExerciseToCreate['repetitions'] = $exercise->pivot->default_repetitions;
+            }
+        }
+        return $userExerciseToCreate;
     }
 
     private function calculateAutoProgression($userExercise)

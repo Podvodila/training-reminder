@@ -95,7 +95,13 @@ class ActivitiesController extends Controller
         foreach ($exercises as $exercise) {
             $dataToSync[$exercise['exercise_id']] = array_merge($exercise, $additionalFields);
         }
-        $activity->exercises()->sync($dataToSync);
+        $activity
+            ->exercises()
+            ->syncWithoutDetaching($dataToSync);
+        $activity
+            ->exercises()
+            ->whereNotIn('exercise_id', array_keys($dataToSync))
+            ->update(['activity_id' => null]); //Mark null instead of deleting to remain history of user exercises
 
         return $activity;
     }

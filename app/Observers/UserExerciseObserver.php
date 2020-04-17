@@ -13,16 +13,28 @@ class UserExerciseObserver
      * Handle the user exercise "created" event.
      *
      * @param  UserExercise  $userExercise
+     * @return bool|void
+     */
+    public function creating(UserExercise $userExercise)
+    {
+        if (!$this->isAvailableForCreation($userExercise)) {
+            return false;
+        }
+    }
+
+    /**
+     * Handle the user exercise "created" event.
+     *
+     * @param  UserExercise  $userExercise
      * @return void
      */
     public function created(UserExercise $userExercise)
     {
         UserExerciseTelegramNotification::dispatch($userExercise)->delay($userExercise->notify_at);
-        //UserExerciseTelegramNotification::dispatch($userExercise); //TODO: uncomment for test
     }
 
     /**
-     * Handle the activity "updated" event.
+     * Handle the user exercise "updated" event.
      *
      * @param  UserExercise  $userExercise
      * @return void
@@ -54,5 +66,11 @@ class UserExerciseObserver
                 && $activity->status === Activity::STATUS_ACTIVE;
         }
         return $result;
+    }
+
+    private function isAvailableForCreation(UserExercise $userExercise)
+    {
+        $activity = $userExercise->activity_exercise->activity;
+        return now()->between($activity->available_time_from, $activity->available_time_to);
     }
 }
