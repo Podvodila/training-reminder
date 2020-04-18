@@ -12,8 +12,8 @@ use Longman\TelegramBot\Request;
 class TrainnowCommand extends UserCommand
 {
     protected $name = 'trainnow';
-    protected $description = 'Gen next exercises immediately';
-    protected $usage = '/train_now';
+    protected $description = 'Get next exercises immediately';
+    protected $usage = '/trainnow';
     protected $version = '1.0.0';
 
     public function execute()
@@ -32,7 +32,7 @@ class TrainnowCommand extends UserCommand
                 throw new \Exception('Activity is not active');
             }
             $userExercises = $activity->user_exercises()->whereNotNull('notification_job_id')->get();
-            if (empty($userExercises)) {
+            if ($userExercises->isEmpty()) {
                 throw new \Exception('Exercises are not scheduled');
             }
             $jobIds = $userExercises->pluck('notification_job_id');
