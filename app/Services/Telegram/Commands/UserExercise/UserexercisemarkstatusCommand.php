@@ -3,7 +3,6 @@
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use App\Models\Activity\Activity;
-use App\Models\ActivityExercise\ActivityExercise;
 use \App\Models\UserExercise\UserExercise;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Commands\SystemCommand;

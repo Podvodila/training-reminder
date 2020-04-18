@@ -6,6 +6,7 @@ use App\Jobs\UserExerciseTelegramNotification;
 use App\Models\Activity\Activity;
 use App\Models\UserExercise\UserExercise;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Contracts\Bus\Dispatcher;
 
 class UserExerciseObserver
 {
@@ -17,7 +18,7 @@ class UserExerciseObserver
      */
     public function created(UserExercise $userExercise)
     {
-        UserExerciseTelegramNotification::dispatch($userExercise)->delay($userExercise->notify_at);
+        $this->createNotification($userExercise);
     }
 
     /**
@@ -53,5 +54,13 @@ class UserExerciseObserver
                 && $activity->status === Activity::STATUS_ACTIVE;
         }
         return $result;
+    }
+
+    private function createNotification(UserExercise $userExercise)
+    {
+        $job = (new UserExerciseTelegramNotification($userExercise))->delay($userExercise->notify_at);
+        $jobId = app(Dispatcher::class)->dispatch($job);
+        $userExercise->notification_job_id = $jobId;
+        $userExercise->save();
     }
 }

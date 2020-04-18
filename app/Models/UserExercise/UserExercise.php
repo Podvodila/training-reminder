@@ -17,6 +17,7 @@ class UserExercise extends Model
         'status',
         'sets',
         'repetitions',
+        'notification_job_id',
     ];
 
     const DIFFICULTY_TYPE_EASY = 1;
