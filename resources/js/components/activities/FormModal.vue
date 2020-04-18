@@ -49,6 +49,7 @@
                                             :key="index"
                                             :label="exercise.name"
                                             :value="exercise.id"
+                                            :disabled="!isExerciseAvailable(exercise.id)"
                                             v-for="(exercise, index) in exercises">
                                         </el-option>
                                     </el-select>
@@ -203,6 +204,9 @@
             },
             addExercise() {
                 this.form.exercises.push(_.cloneDeep(this.originExercise));
+            },
+            isExerciseAvailable(exerciseId) {
+                return !_.map(this.form.exercises, 'exercise_id').includes(exerciseId);
             },
         },
         computed: {

@@ -48,8 +48,8 @@
                         error: function (error) {
                             if (error.response.data.errors) {
                                 this.errors.record(error.response.data.errors);
-                            } else if (error.response.data.message) {
-                                this.$message.error(error.response.data.message);
+                            } else if (error.response.data.message || error.response.data.error) {
+                                this.$message.error(error.response.data.message || error.response.data.error);
                             } else {
                                 this.$message.error('Unknown server error');
                             }

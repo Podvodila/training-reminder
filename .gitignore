@@ -16,3 +16,7 @@ yarn-error.log
 /storage/
 /public/storage
 /ngrok.exe
+/.idea/
+/resources/js/includes/ziggy.js
+/public/mix-manifest.json
+/yarn.lock
