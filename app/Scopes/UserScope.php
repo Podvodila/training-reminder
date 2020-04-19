@@ -10,6 +10,9 @@ class UserScope implements Scope
 {
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('user_id', '=', auth()->user()->id);
+        $user = auth()->user();
+        if ($user) {
+            $builder->where('user_id', '=', $user->id);
+        }
     }
 }
