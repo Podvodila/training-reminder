@@ -6,6 +6,7 @@ use App\Models\ActivityExercise\ActivityExercise;
 use App\Models\Exercise\Exercise;
 use App\Models\User\User;
 use App\Models\UserExercise\UserExercise;
+use App\Scopes\UserScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -44,6 +45,16 @@ class Activity extends Model
             'title' => 'Auto',
         ],
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new UserScope);
+    }
 
     public function user()
     {

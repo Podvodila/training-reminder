@@ -3,6 +3,7 @@
 namespace App\Models\Exercise;
 
 use App\Models\Activity\Activity;
+use App\Scopes\UserScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Exercise extends Model
@@ -24,6 +25,16 @@ class Exercise extends Model
             'title' => 'Sport',
         ],
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new UserScope);
+    }
 
     public function activities()
     {

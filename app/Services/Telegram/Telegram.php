@@ -6,6 +6,7 @@ use App\Models\Activity\Activity;
 use App\Models\UserExercise\UserExercise;
 use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use \Longman\TelegramBot\Telegram as TelegramService;
 
@@ -65,5 +66,29 @@ class Telegram
         ];
 
         Request::sendMessage($data);
+    }
+
+    /**
+     * @param $chatId
+     * @param $text
+     * @return string
+     */
+    public function sendPlainMessage($chatId, $text)
+    {
+        $data = [
+            'chat_id' => $chatId,
+            'text' => $text,
+        ];
+
+        $responseMsg = 'OK';
+        try {
+            $response = Request::sendMessage($data);
+            if (!$response->isOk()) {
+                $responseMsg = $response->getDescription();
+            }
+        } catch (TelegramException $telegramException) {
+            $responseMsg = $telegramException->getMessage();
+        }
+        return $responseMsg;
     }
 }
