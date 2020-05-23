@@ -13,7 +13,7 @@ class UserExercise extends Model
         'difficulty_type',
         'notify_at',
         'is_notified',
-        'done_at',
+        'finished_at',
         'status',
         'sets',
         'repetitions',
@@ -29,6 +29,7 @@ class UserExercise extends Model
     const STATUS_IN_PROGRESS = 1;
     const STATUS_DONE = 2;
     const STATUS_ABANDONED = 3;
+    const STATUS_LATER = 4;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -34,6 +34,7 @@ return [
         'bot' => [
             'token' => env('TELEGRAM_BOT_TOKEN'),
             'name' => env('TELEGRAM_BOT_NAME'),
+            'admin_id' => env('TELEGRAM_ADMIN_ID'),
         ],
     ],
 ];

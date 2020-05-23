@@ -50,9 +50,7 @@ class UnsetTelegramBotWebhook extends Command
         try {
             $result = $this->telegram->deleteWebhook();
 
-            if ($result->isOk()) {
-                $this->info($result->getDescription());
-            }
+            $this->info($result->getDescription());
         } catch (TelegramException $e) {
             $this->error($e->getMessage());
             Log::error($e->getMessage());

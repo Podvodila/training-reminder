@@ -4,7 +4,6 @@ namespace App\Services\Telegram;
 
 use App\Models\Activity\Activity;
 use App\Models\UserExercise\UserExercise;
-use Illuminate\Support\Facades\Log;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
@@ -27,7 +26,7 @@ class Telegram
             __DIR__ . '/Commands',
         ];
         $this->service->addCommandsPaths($this->commandPaths);
-        $this->service->enableAdmin(env('TELEGRAM_ADMIN_ID'));
+        $this->service->enableAdmin(config('services.telegram.bot.admin_id'));
     }
 
     public function getService()
@@ -50,8 +49,13 @@ class Telegram
         }
 
         $inline_keyboard = [
-            ['text' => 'Done', 'callback_data' => "userexercisemarkstatus@$userExercise->id " . UserExercise::STATUS_DONE],
-            ['text' => 'Give Up', 'callback_data' => "userexercisemarkstatus@$userExercise->id " . UserExercise::STATUS_ABANDONED],
+            [
+                ['text' => 'Done', 'callback_data' => "userexercisemarkstatus@$userExercise->id " . UserExercise::STATUS_DONE],
+            ],
+            [
+                ['text' => 'Give Up', 'callback_data' => "userexercisemarkstatus@$userExercise->id " . UserExercise::STATUS_ABANDONED],
+                ['text' => 'Later', 'callback_data' => "userexercisemarkstatus@$userExercise->id " . UserExercise::STATUS_LATER],
+            ]
         ];
 
         $text = "It's time to:" . PHP_EOL . "$exercise->name";
@@ -62,7 +66,7 @@ class Telegram
         $data = [
             'chat_id' => $user->telegram_chat_id,
             'text' => $text,
-            'reply_markup' => new InlineKeyboard(['inline_keyboard' => [$inline_keyboard]]),
+            'reply_markup' => new InlineKeyboard(['inline_keyboard' => $inline_keyboard]),
         ];
 
         Request::sendMessage($data);

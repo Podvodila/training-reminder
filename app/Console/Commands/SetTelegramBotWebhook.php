@@ -50,9 +50,7 @@ class SetTelegramBotWebhook extends Command
         try {
             $hookUrl = route('telegram-bot.hook');
             $result = $this->telegram->setWebhook($hookUrl);
-            if ($result->isOk()) {
-                $this->info($result->getDescription());
-            }
+            $this->info($result->getDescription());
         } catch (TelegramException $e) {
             $this->error($e->getMessage());
             Log::error($e->getMessage());

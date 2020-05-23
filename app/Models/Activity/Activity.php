@@ -90,7 +90,7 @@ class Activity extends Model
 
     public function cancelFutureExercises()
     {
-        $this->user_exercises()->where('notify_at', '>', Carbon::now())->whereNull('done_at')->delete();
+        $this->user_exercises()->where('notify_at', '>', Carbon::now())->whereNull('finished_at')->delete();
     }
 
     private function getUserExercisesToCreate()
@@ -99,13 +99,14 @@ class Activity extends Model
         $allExercises = $this->exercises;
         $existedUserExercises = $this
             ->user_exercises()
-            ->orderBy('done_at', 'desc')
+            ->orderBy('finished_at', 'desc')
             ->get()
             ->unique('activity_exercise_id')
-            ->sortBy('done_at');
+            ->sortBy('finished_at');
 
+        $existedActivityExerciseIds = $existedUserExercises->pluck('activity_exercise_id')->toArray();
         foreach ($allExercises as $exercise) {
-            if (in_array($exercise->pivot->id, $existedUserExercises->pluck('activity_exercise_id')->toArray())) {
+            if (in_array($exercise->pivot->id, $existedActivityExerciseIds)) {
                 continue;
             }
             $userExerciseToCreate = $this->generateExercise($exercise);

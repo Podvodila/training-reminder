@@ -5,33 +5,32 @@ namespace Longman\TelegramBot\Commands\SystemCommands;
 use App\Models\Activity\Activity;
 use \App\Models\UserExercise\UserExercise;
 use Illuminate\Support\Facades\Log;
-use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Commands\CustomSystemCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Request;
-use Longman\TelegramBot\Entities\CallbackQuery;
 
-class UserexercisemarkstatusCommand extends SystemCommand
+class UserexercisemarkstatusCommand extends CustomSystemCommand
 {
     protected $name = 'userexercisemarkstatus'; // User Exercise mark status
     protected $description = 'Mark User Exercise Status';
     protected $version = '1.0.0';
 
-    /**
-     * @var CallbackQuery
-     */
-    private $allQueryData;
+    const PARAM_EXERCISE_ID = 0;
+    const PARAM_STATUS = 1;
+
+    const AVAILABLE_QUERY_PARAMETERS = [
+        self::PARAM_EXERCISE_ID => 'userExerciseId',
+        self::PARAM_STATUS => 'status',
+    ];
+
+
     private $userExercise;
 
     public function execute()
     {
-        //todo: get rid of duplicated code in commands
-        $this->allQueryData = $this->getCallbackQuery();
-        $queryData = $this->allQueryData->getData();
-        $queryData = (preg_match('[@]', $queryData)) ? explode('@', $queryData)[1] : '';
-
-        $userExerciseId = explode(' ', $queryData)[0];
+        $userExerciseId = $this->getQueryData(self::PARAM_EXERCISE_ID);
         $this->userExercise = UserExercise::find($userExerciseId);
-        $status = explode(' ', $queryData)[1];
+        $status = $this->getQueryData(self::PARAM_STATUS);
 
         $this->userExercise->status = intval($status);
         $this->userExercise->save();
@@ -44,6 +43,9 @@ class UserexercisemarkstatusCommand extends SystemCommand
             case UserExercise::STATUS_ABANDONED:
                 $this->handleStatusAbandoned();
                 break;
+            case UserExercise::STATUS_LATER:
+                $this->handleStatusLater();
+                break;
         }
     }
 
@@ -51,7 +53,7 @@ class UserexercisemarkstatusCommand extends SystemCommand
     {
         switch ($this->userExercise->activity_exercise->progression_type) {
             case Activity::PROGRESSION_TYPE_STATIC:
-                $this->userExercise->done_at = now();
+                $this->userExercise->finished_at = now();
                 $this->userExercise->save();
                 $this->sendSuccessMsg();
                 break;
@@ -63,7 +65,9 @@ class UserexercisemarkstatusCommand extends SystemCommand
 
     private function handleStatusAbandoned()
     {
-        $message = $this->allQueryData->getMessage();
+        $this->userExercise->finished_at = now();
+        $this->userExercise->save();
+        $message = $this->query->getMessage();
         $chat = $message->getChat();
         $data = [
             'chat_id' => $chat->getId(),
@@ -75,7 +79,7 @@ class UserexercisemarkstatusCommand extends SystemCommand
 
     private function sendSuccessMsg($withDifficultyBtns = false)
     {
-        $message = $this->allQueryData->getMessage();
+        $message = $this->query->getMessage();
         $chat = $message->getChat();
         $data = [
             'chat_id' => $chat->getId(),
@@ -85,6 +89,18 @@ class UserexercisemarkstatusCommand extends SystemCommand
         if ($withDifficultyBtns) {
             $data['reply_markup'] = $this->getDifficultyBtns();
         }
+        Request::editMessageText($data);
+    }
+
+    private function handleStatusLater()
+    {
+        $message = $this->query->getMessage();
+        $chat = $message->getChat();
+        $data = [
+            'chat_id' => $chat->getId(),
+            'message_id' => $message->getMessageId(),
+            'text' => $this->getLaterMsg(),
+        ];
         Request::editMessageText($data);
     }
 
@@ -123,6 +139,15 @@ class UserexercisemarkstatusCommand extends SystemCommand
         $userExercise = $this->userExercise;
         $exercise = $userExercise->activity_exercise->exercise;
         $text = "Exercise $exercise->name is not completed";
+
+        return $text;
+    }
+
+    private function getLaterMsg()
+    {
+        $userExercise = $this->userExercise;
+        $exercise = $userExercise->activity_exercise->exercise;
+        $text = "Exercise $exercise->name is postponed for the next time";
 
         return $text;
     }

@@ -4,33 +4,31 @@ namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use \App\Models\UserExercise\UserExercise;
 use Carbon\Carbon;
-use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Commands\CustomSystemCommand;
 use Longman\TelegramBot\Entities\CallbackQuery;
 use Longman\TelegramBot\Request;
 
-class UserexercisedoneCommand extends SystemCommand
+class UserexercisedoneCommand extends CustomSystemCommand
 {
     protected $name = 'userexercisedone'; // User Exercise done
     protected $description = 'Mark User Exercise as Done';
     protected $version = '1.0.0';
 
-    /**
-     * @var CallbackQuery
-     */
-    private $allQueryData;
+    const PARAM_EXERCISE_ID = 0;
+    const PARAM_DIFFICULTY = 1;
+
+    const AVAILABLE_QUERY_PARAMETERS = [
+        self::PARAM_EXERCISE_ID => 'userExerciseId',
+        self::PARAM_DIFFICULTY => 'difficulty',
+    ];
 
     public function execute()
     {
-        //todo: get rid of duplicated code in commands
-        $this->allQueryData = $this->getCallbackQuery();
-        $queryData = $this->allQueryData->getData();
-        $queryData = (preg_match('[@]', $queryData)) ? explode('@', $queryData)[1] : '';
-
-        $userExerciseId = explode(' ', $queryData)[0];
-        $difficulty = explode(' ', $queryData)[1];
+        $userExerciseId = $this->getQueryData(self::PARAM_EXERCISE_ID);
+        $difficulty = $this->getQueryData(self::PARAM_DIFFICULTY);
 
         $userExercise = UserExercise::find($userExerciseId);
-        $userExercise->done_at = Carbon::now();
+        $userExercise->finished_at = Carbon::now();
         $userExercise->difficulty_type = $difficulty;
         $userExercise->save();
 
@@ -42,7 +40,7 @@ class UserexercisedoneCommand extends SystemCommand
      */
     private function sendResponse()
     {
-        $message = $this->allQueryData->getMessage();
+        $message = $this->query->getMessage();
         $chat = $message->getChat();
         $data = [
             'chat_id' => $chat->getId(),

@@ -38,17 +38,16 @@ class UserExerciseObserver
 
     private function isNewExercisesShouldBeCreated(UserExercise $userExercise)
     {
-        $result = $userExercise->isDirty('done_at');
+        $result = $userExercise->isDirty('finished_at');
         if (!$result) {
-            $result = $userExercise->isDirty('status') && $userExercise->status === UserExercise::STATUS_ABANDONED;
+            $result = $userExercise->isDirty('status') && $userExercise->status === UserExercise::STATUS_LATER;
         }
         if ($result) {
             $activity = $userExercise->activity_exercise->activity;
             $result = !$activity
                     ->user_exercises()
                     ->where(function ($query) {
-                        return $query->whereNull('done_at')
-                            ->where('status', '!=', UserExercise::STATUS_ABANDONED);
+                        return $query->whereIn('status', [UserExercise::STATUS_WAITING, UserExercise::STATUS_IN_PROGRESS]);
                     })
                     ->exists()
                 && $activity->status === Activity::STATUS_ACTIVE;

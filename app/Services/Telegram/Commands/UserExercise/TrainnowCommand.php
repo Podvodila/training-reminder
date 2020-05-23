@@ -24,7 +24,12 @@ class TrainnowCommand extends UserCommand
 
         try {
             $activityName = trim($message->getText(true));
-            $activity = Activity::where('name', '=', $activityName)->first();
+            $activity = Activity
+                ::where('name', '=', $activityName)
+                ->whereHas('user', function ($query) use ($chat_id) {
+                    return $query->where('telegram_chat_id', '=', $chat_id);
+                })
+                ->first();
             if (!$activity) {
                 throw new \Exception('Activity with that name not found');
             }
