@@ -8,6 +8,7 @@ import { default as elementLocale } from 'element-ui/lib/locale/lang/en';
 import VueAxios from 'vue-axios';
 import VueAuth from '@websanova/vue-auth';
 
+import moment from 'moment'
 
 import Routes from '@/js/routes.js'
 import authParams from './includes/auth'
@@ -21,6 +22,8 @@ Vue.use(VueAuth, authParams);
 
 Vue.axios.defaults.baseURL = window.Laravel.appUrl;
 Vue.axios.defaults.withCredentials = true;
+
+window.moment = moment;
 
 window.Vue = new Vue({
     el: '#app',

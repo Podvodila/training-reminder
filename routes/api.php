@@ -34,11 +34,16 @@ Route::middleware('auth:airlock')->group(function () {
 
     Route::group(['prefix' => 'activities'], function() {
         Route::get('/', 'ActivitiesController@index')->name('activities.index');
+        Route::get('/all', 'ActivitiesController@get')->name('activities.get');
         Route::get('/{activity}', 'ActivitiesController@show')->name('activities.show');
         Route::post('/', 'ActivitiesController@store')->name('activities.store');
         Route::post('/toggle-status/{activity}', 'ActivitiesController@toggleStatus')->name('activities.toggle-status');
         Route::put('/{activity}', 'ActivitiesController@update')->name('activities.update');
         Route::delete('/{activity}', 'ActivitiesController@destroy')->name('activities.destroy');
+    });
+
+    Route::group(['prefix' => 'statistics'], function() {
+        Route::get('/', 'StatisticsController@index')->name('statistics.index');
     });
 });
 

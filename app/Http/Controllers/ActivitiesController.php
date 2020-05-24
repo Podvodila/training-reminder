@@ -15,6 +15,11 @@ class ActivitiesController extends Controller
         return response()->json($list);
     }
 
+    public function get()
+    {
+        return response()->json(Activity::all());
+    }
+
     public function show(Activity $activity)
     {
         $activity->load('exercises');
