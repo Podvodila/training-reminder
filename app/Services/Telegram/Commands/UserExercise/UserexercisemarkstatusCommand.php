@@ -5,7 +5,7 @@ namespace Longman\TelegramBot\Commands\SystemCommands;
 use App\Models\Activity\Activity;
 use \App\Models\UserExercise\UserExercise;
 use Illuminate\Support\Facades\Log;
-use Longman\TelegramBot\Commands\CustomSystemCommand;
+use App\Services\Telegram\Commands\CustomSystemCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Request;
 

@@ -4,7 +4,7 @@ namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use \App\Models\UserExercise\UserExercise;
 use Carbon\Carbon;
-use Longman\TelegramBot\Commands\CustomSystemCommand;
+use App\Services\Telegram\Commands\CustomSystemCommand;
 use Longman\TelegramBot\Entities\CallbackQuery;
 use Longman\TelegramBot\Request;
 

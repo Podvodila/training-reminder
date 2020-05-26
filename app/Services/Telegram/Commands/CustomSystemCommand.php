@@ -1,6 +1,6 @@
 <?php
 
-namespace Longman\TelegramBot\Commands;
+namespace App\Services\Telegram\Commands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\CallbackQuery;
