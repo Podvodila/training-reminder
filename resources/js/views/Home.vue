@@ -49,6 +49,8 @@
 </script>
 
 <style lang="scss" scoped>
+    @import "~@/sass/_variables";
+
     .home-page {
         padding-top: 60px;
 
@@ -63,7 +65,14 @@
             right: 0;
 
             .menu-wrap {
+                display: flex;
                 border-bottom: 0;
+
+                @media (max-width: $--xs) {
+                    .el-menu-item {
+                        padding: 0 10px;
+                    }
+                }
             }
 
             .profile-section {

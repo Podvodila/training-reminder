@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="filters-wrap">
-            <el-form :inline="true" size="mini" class="filters">
-                <el-form-item>
-                    <el-select v-model="filters.activity_id" placeholder="Activity" :loading="activitiesLoading">
+            <el-form size="mini" class="filters">
+                <el-form-item class="activity-filter-wrap">
+                    <el-select v-model="filters.activity_id" placeholder="Activity" :loading="activitiesLoading" class="w-100">
                         <el-option
                             :key="activity.id"
                             :label="activity.name"
@@ -16,6 +16,7 @@
                     <el-date-picker
                         v-model="dateRange"
                         type="daterange"
+                        class="w-100"
                         range-separator="To"
                         value-format="yyyy-MM-dd"
                         :clearable="false"
@@ -125,6 +126,8 @@
 </script>
 
 <style scoped lang="scss">
+    @import "~@/sass/_variables";
+
     .chart-wrap {
         height: calc(100vh - 127px);
         width: 100vw;
@@ -133,8 +136,28 @@
 
     .filters-wrap {
         .filters {
-            margin-top: 20px;
-            margin-left: 30px;
+            display: flex;
+            margin: 20px 30px 0;
+
+            .activity-filter-wrap {
+                margin-right: 15px;
+            }
+        }
+    }
+
+    @media (max-width: $--sm) {
+        .chart-wrap {
+            height: calc(100vh - 173px);
+        }
+
+        .filters-wrap {
+            .filters {
+                flex-direction: column;
+
+                .activity-filter-wrap {
+                    margin-right: 0;
+                }
+            }
         }
     }
 </style>

@@ -1,6 +1,11 @@
 <template>
     <el-dialog :title="modalTitle" :visible.sync="modalVisible">
-        <el-form label-width="100px" ref="form" @submit.native.prevent="save" size="small" v-loading="formLoading">
+        <el-form label-width="100px"
+                 label-position="left"
+                 ref="form"
+                 @submit.native.prevent="save"
+                 size="small"
+                 v-loading="formLoading">
             <el-form-item label="Name" :error="errors.get('name')">
                 <el-input placeholder="Name" v-model="form.name"></el-input>
             </el-form-item>

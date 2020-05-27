@@ -14,6 +14,8 @@ import Routes from '@/js/routes.js'
 import authParams from './includes/auth'
 import App from '@/js/views/App'
 
+import {isSmallScreen} from "@/js/mixins/isSmallScreen"
+
 Vue.router = Routes;
 
 Vue.use(ElementUI, { locale: elementLocale });
@@ -26,6 +28,7 @@ Vue.axios.defaults.withCredentials = true;
 window.moment = moment;
 
 window.Vue = new Vue({
+    mixins: [isSmallScreen],
     el: '#app',
     router: Routes,
     render: h => h(App),

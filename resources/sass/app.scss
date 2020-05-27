@@ -21,3 +21,31 @@ body {
 .color-info {
     color: $--color-info;
 }
+
+.w-100 {
+    width: 100% !important;
+}
+
+$amounts: (0, 5, 10, 15, 20, 25, 30, 45, 60, 75, 90);
+$sides: (top, bottom, left, right);
+
+// "p-a-*" & "m-a-*" for all sides
+@each $space in $amounts {
+    .m-a-#{$space} {
+        margin: #{$space}px !important;
+    }
+    .p-a-#{$space} {
+        padding: #{$space}px !important;
+    }
+}
+
+@each $space in $amounts {
+    @each $side in $sides {
+        .m-#{str-slice($side, 0, 1)}-#{$space} {
+            margin-#{$side}: #{$space}px !important;
+        }
+        .p-#{str-slice($side, 0, 1)}-#{$space} {
+            padding-#{$side}: #{$space}px !important;
+        }
+    }
+}

@@ -2,7 +2,7 @@
     <section class="login-page">
         <div class="login-form-container">
             <div class="login-form-wrap">
-                <el-form label-width="100px" class="login-form">
+                <el-form label-width="100px" class="login-form" label-position="left">
                     <el-form-item label="Email" :error="errors.get('email')">
                         <el-input v-model="form.email" @input="errors.clear('email')"></el-input>
                     </el-form-item>
@@ -78,6 +78,7 @@
             height: 100%;
             .login-form-wrap {
                 width: 400px;
+                padding: 15px;
 
                 .login-btn {
                     width: 100%;

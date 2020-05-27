@@ -1,5 +1,5 @@
 <template>
-    <div class="activities-page">
+    <div class="activities-page p-a-20">
         <el-row>
             <el-col :span="24">
                 <el-button type="primary" size="small" @click="openModal">Create</el-button>
@@ -36,6 +36,6 @@
 <style scoped lang="scss">
     .activities-page {
         max-width: 1200px;
-        margin: 20px auto 0;
+        margin: 0 auto 0;
     }
 </style>

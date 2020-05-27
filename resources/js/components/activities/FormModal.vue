@@ -1,6 +1,11 @@
 <template>
     <el-dialog :title="modalTitle" :visible.sync="modalVisible" class="activity-form-modal">
-        <el-form label-width="150px" ref="form" @submit.native.prevent="save" size="small" v-loading="formLoading">
+        <el-form label-width="150px"
+                 :label-position="formLabelPosition"
+                 ref="form"
+                 @submit.native.prevent="save"
+                 size="small"
+                 v-loading="formLoading">
             <el-form-item label="Name" :error="errors.get('name')">
                 <el-input placeholder="Name" v-model="form.name"></el-input>
             </el-form-item>
@@ -19,6 +24,7 @@
             <el-form-item label="Activity Range" :error="errors.get('available_time_from') || errors.get('available_time_to')">
                 <el-time-picker
                     is-range
+                    class="w-100"
                     v-model="availabilityRange"
                     value-format="HH:mm:ss"
                     range-separator="To"
@@ -224,6 +230,12 @@
                     this.form.available_time_from = time ? time[0] : null;
                     this.form.available_time_to = time ? time[1] : null;
                 },
+            },
+            formLabelPosition() {
+                return this.isSmallScreen ? 'top' : 'left';
+            },
+            isSmallScreen() {
+                return this.$root.configServer.isSmallScreen;
             },
         },
         watch: {

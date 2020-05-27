@@ -1,8 +1,8 @@
 <template>
     <div class="activities-list">
         <el-table :data="activities" v-loading="activitiesLoading">
-            <el-table-column label="Name" prop="name"></el-table-column>
-            <el-table-column label="Interval (minutes)" prop="interval_minutes"></el-table-column>
+            <el-table-column label="Name" prop="name" min-width="100"></el-table-column>
+            <el-table-column label="Interval (minutes)" prop="interval_minutes" min-width="82"></el-table-column>
             <el-table-column label="Activity Range">
                 <template slot-scope="scope">
                     <div>
@@ -144,6 +144,10 @@
     }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+    .activities-list {
+        &::v-deep .cell {
+            word-break: break-word;
+        }
+    }
 </style>

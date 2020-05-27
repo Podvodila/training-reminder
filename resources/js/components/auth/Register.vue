@@ -2,7 +2,7 @@
     <section class="register-page">
         <div class="register-form-container">
             <div class="register-form-wrap">
-                <el-form label-width="100px" class="register-form">
+                <el-form label-width="100px" class="register-form" label-position="left">
                     <el-form-item label="Email" :error="errors.get('email')">
                         <el-input v-model="form.email" @input="errors.clear('email')"></el-input>
                     </el-form-item>
@@ -74,6 +74,7 @@
             height: 100%;
             .register-form-wrap {
                 width: 400px;
+                padding: 15px;
 
                 .register-btn {
                     width: 100%;
