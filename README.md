@@ -4,7 +4,7 @@
 
 Application for reminding and tracking sport activity
 
-##DEMO
+## DEMO
 <p><b>Website</b> - <a href="https://re-minder.xyz/" target="_blank">re-minder.xyz</a></p>
 <p><b>Telegram Bot</b> - <a href="https://telegram.me/re_mind_er_bot" target="_blank">@re_mind_er_bot</a></p>
 <p>In order to start using you need to register on the website and connect Telegram bot</p>
@@ -21,8 +21,8 @@ Application for reminding and tracking sport activity
 <br>
 
 Through the bot, you can receive notifications, mark exercises as completed and adjust the following workouts indicating how difficult it was to complete the current exercise.
+
 ![](https://i.imgur.com/pys8ob7.png)
 
-##SETUP
-
+## SETUP
 - `php artisan ziggy:generate "resources/js/includes/ziggy.js"` to generate routes file
