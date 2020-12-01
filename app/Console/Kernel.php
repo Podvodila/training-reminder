@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CheckGpuStock;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -27,6 +28,8 @@ class Kernel extends ConsoleKernel
         // Backups
         $schedule->command('backup:clean')->dailyAt('01:30');
         $schedule->command('backup:run --only-db')->dailyAt('01:35');
+
+        $schedule->command(CheckGpuStock::class)->everyMinute()->withoutOverlapping();
     }
 
     /**
