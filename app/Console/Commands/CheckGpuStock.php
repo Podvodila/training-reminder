@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use GuzzleHttp\Client;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 
 class CheckGpuStock extends Command
 {
@@ -53,8 +53,6 @@ class CheckGpuStock extends Command
 
     const USER_ID_TO_NOTIFY = 1;
 
-    private $neweggClient;
-
     /**
      * Create a new command instance.
      *
@@ -72,12 +70,14 @@ class CheckGpuStock extends Command
      */
     public function handle()
     {
-        $this->neweggClient = new Client(['base_uri' => self::NEWEGG_BASE_URI]);
+        $neweggClient = HttpClient::create();
 
         foreach (self::LINKS as $link) {
-            $response = $this->neweggClient->get($link);
-            $html = $response->getBody()->getContents();
-            if (strpos($html, self::NEWEGG_STOCK_KEYWORD) !== false) {
+            $response = $neweggClient->request('GET', self::NEWEGG_BASE_URI . $link);
+            $html = $response->getContent();
+            $crawler = new Crawler($html);
+            $stockInfo = $crawler->filter('.product-inventory strong')->text();
+            if (strpos($stockInfo, self::NEWEGG_STOCK_KEYWORD) !== false) {
                 $this->notify($link);
             }
             sleep(self::WAIT_SECONDS);
