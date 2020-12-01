@@ -87,6 +87,6 @@ class CheckGpuStock extends Command
     private function notify($link)
     {
         $this->info('GPU stock notify is sent');
-        Artisan::call("telegram:send-plain-msg", ['user' => self::USER_ID_TO_NOTIFY, 'message' => 'GPU in stock - ' . $link]);
+        Artisan::call("telegram:send-plain-msg", ['user' => self::USER_ID_TO_NOTIFY, 'msg' => 'GPU in stock - ' . $link]);
     }
 }
