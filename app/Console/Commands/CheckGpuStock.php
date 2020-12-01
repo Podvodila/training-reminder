@@ -49,7 +49,7 @@ class CheckGpuStock extends Command
 
     const WAIT_SECONDS = 2;
 
-    const NEWEGG_NO_STOCK_KEYWORD = 'OUT OF STOCK.';
+    const NEWEGG_STOCK_KEYWORD = 'In stock';
 
     const USER_ID_TO_NOTIFY = 1;
 
@@ -77,7 +77,7 @@ class CheckGpuStock extends Command
         foreach (self::LINKS as $link) {
             $response = $this->neweggClient->get($link);
             $html = $response->getBody()->getContents();
-            if (strpos($html, self::NEWEGG_NO_STOCK_KEYWORD) === false) {
+            if (strpos($html, self::NEWEGG_STOCK_KEYWORD) !== false) {
                 $this->notify($link);
             }
             sleep(self::WAIT_SECONDS);
