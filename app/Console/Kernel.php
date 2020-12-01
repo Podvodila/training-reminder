@@ -25,11 +25,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $path = storage_path('logs/scheduler.log');
+
         // Backups
         $schedule->command('backup:clean')->dailyAt('01:30');
         $schedule->command('backup:run --only-db')->dailyAt('01:35');
 
-        $schedule->command(CheckGpuStock::class)->everyMinute()->withoutOverlapping();
+        $schedule->command(CheckGpuStock::class)->everyMinute()->withoutOverlapping()->appendOutputTo($path);
     }
 
     /**

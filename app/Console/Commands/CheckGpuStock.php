@@ -45,6 +45,8 @@ class CheckGpuStock extends Command
         'evga-geforce-rtx-3080-10g-p5-3885-kr/p/N82E16814487520',
     ];
 
+    const NEWEGG_BASE_URI = 'https://www.newegg.com/';
+
     const WAIT_SECONDS = 2;
 
     const NEWEGG_NO_STOCK_KEYWORD = 'OUT OF STOCK.';
@@ -70,7 +72,7 @@ class CheckGpuStock extends Command
      */
     public function handle()
     {
-        $this->neweggClient = new Client(['base_uri' => 'https://www.newegg.com/']);
+        $this->neweggClient = new Client(['base_uri' => self::NEWEGG_BASE_URI]);
 
         foreach (self::LINKS as $link) {
             $response = $this->neweggClient->get($link);
@@ -87,6 +89,9 @@ class CheckGpuStock extends Command
     private function notify($link)
     {
         $this->info('GPU stock notify is sent');
-        Artisan::call("telegram:send-plain-msg", ['user' => self::USER_ID_TO_NOTIFY, 'msg' => 'GPU in stock - ' . $link]);
+        Artisan::call("telegram:send-plain-msg", [
+            'user' => self::USER_ID_TO_NOTIFY,
+            'msg' => 'GPU in stock - ' . self::NEWEGG_BASE_URI . $link,
+        ]);
     }
 }
