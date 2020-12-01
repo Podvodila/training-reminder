@@ -75,7 +75,7 @@ class CheckGpuStock extends Command
         foreach (self::LINKS as $link) {
             $response = $this->neweggClient->get($link);
             $html = $response->getBody()->getContents();
-            if (strpos($html, self::NEWEGG_NO_STOCK_KEYWORD) !== false) {
+            if (strpos($html, self::NEWEGG_NO_STOCK_KEYWORD) === false) {
                 $this->notify($link);
             }
             sleep(self::WAIT_SECONDS);
