@@ -24,6 +24,7 @@ class CheckGpuStock extends Command
     protected $description = 'Check gpu stock';
 
     const LINKS = [
+        //3080
         'pny-geforce-rtx-3080-vcg308010tfxppb/p/N82E16814133809',
         'gigabyte-geforce-rtx-3080-gv-n3080eagle-oc-10gd/p/N82E16814932330',
         'gigabyte-geforce-rtx-3080-gv-n3080eagle-10gd/p/N82E16814932367',
@@ -43,6 +44,26 @@ class CheckGpuStock extends Command
         'asus-geforce-rtx-3080-rog-strix-rtx3080-o10g-gaming/p/N82E16814126457',
         'msi-geforce-rtx-3080-rtx-3080-gaming-x-trio-10g/p/N82E16814137597',
         'evga-geforce-rtx-3080-10g-p5-3885-kr/p/N82E16814487520',
+        //3070
+        'msi-geforce-rtx-3070-rtx-3070-ventus-2x/p/N82E16814137605',
+        'evga-geforce-rtx-3070-08g-p5-3753-kr/p/N82E16814487529',
+        'evga-geforce-rtx-3070-08g-p5-3765-kr/p/N82E16814487531',
+        'gigabyte-geforce-rtx-3070-gv-n3070eagle-oc-8gd/p/N82E16814932343',
+        'asus-geforce-rtx-3070-rog-strix-rtx3070-o8g-gaming/p/N82E16814126458',
+        'msi-geforce-rtx-3070-rtx-3070-ventus-2x-oc/p/N82E16814137602',
+        'asus-geforce-rtx-3070-dual-rtx3070-o8g/p/N82E16814126459',
+        'gigabyte-geforce-rtx-3070-gv-n3070eagle-8gd/p/N82E16814932344',
+        'evga-geforce-rtx-3070-08g-p5-3751-kr/p/N82E16814487528',
+        'asus-geforce-rtx-3070-dual-rtx3070-8g/p/N82E16814126460',
+        'asus-geforce-rtx-3070-ko-rtx3070-o8g-gamin/p/N82E16814126466',
+        'gigabyte-geforce-rtx-3070-gv-n3070vision-oc-8gd/p/N82E16814932360',
+        'gigabyte-geforce-rtx-3070-gv-n3070aorus-m-8gd/p/N82E16814932359',
+        'gigabyte-geforce-rtx-3070-gv-n3070gaming-oc-8gd/p/N82E16814932342',
+        'msi-geforce-rtx-3070-rtx-3070-ventus-3x-oc/p/N82E16814137601',
+        'evga-geforce-rtx-3070-08g-p5-3755-kr/p/N82E16814487530',
+        'asus-geforce-rtx-3070-tuf-rtx3070-o8g-gaming/p/N82E16814126461',
+        'evga-geforce-rtx-3070-08g-p5-3767-kr/p/N82E16814487532',
+        'msi-geforce-rtx-3070-rtx-3070-gaming-x-trio/p/N82E16814137603',
     ];
 
     const NEWEGG_BASE_URI = 'https://www.newegg.com/';
@@ -76,7 +97,7 @@ class CheckGpuStock extends Command
             $response = $neweggClient->request('GET', self::NEWEGG_BASE_URI . $link);
             $html = $response->getContent();
             $crawler = new Crawler($html);
-            $stockInfo = $crawler->filter('.product-inventory strong')->text();
+            $stockInfo = $crawler->filter('.product-inventory strong')->text('node not found');
             if (strpos($stockInfo, self::NEWEGG_STOCK_KEYWORD) !== false) {
                 $this->notify($link);
             }
