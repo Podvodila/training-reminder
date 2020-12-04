@@ -64,6 +64,13 @@ class CheckGpuStock extends Command
         'asus-geforce-rtx-3070-tuf-rtx3070-o8g-gaming/p/N82E16814126461',
         'evga-geforce-rtx-3070-08g-p5-3767-kr/p/N82E16814487532',
         'msi-geforce-rtx-3070-rtx-3070-gaming-x-trio/p/N82E16814137603',
+        //3080 bundle
+        'Product/ComboDealDetails?ItemList=Combo.4208292',
+        'Product/ComboDealDetails?ItemList=Combo.4207521',
+        'Product/ComboDealDetails?ItemList=Combo.4190359',
+        'Product/ComboDealDetails?ItemList=Combo.4207523',
+        'Product/ComboDealDetails?ItemList=Combo.4207751',
+        'Product/ComboDealDetails?ItemList=Combo.4191565',
     ];
 
     const NEWEGG_BASE_URI = 'https://www.newegg.com/';
@@ -73,6 +80,8 @@ class CheckGpuStock extends Command
     const NEWEGG_STOCK_KEYWORD = 'In stock';
 
     const USER_ID_TO_NOTIFY = 1;
+
+    const BUNDLE_ITEM_URL_TEMPLATE = 'Product/ComboDealDetails?ItemList=Combo';
 
     /**
      * Create a new command instance.
@@ -97,7 +106,7 @@ class CheckGpuStock extends Command
             $response = $neweggClient->request('GET', self::NEWEGG_BASE_URI . $link);
             $html = $response->getContent();
             $crawler = new Crawler($html);
-            $stockInfo = $crawler->filter('.product-inventory strong')->text('node not found');
+            $stockInfo = $crawler->filter($this->getSelector($link))->text('node not found');
             if (strpos($stockInfo, self::NEWEGG_STOCK_KEYWORD) !== false) {
                 $this->notify($link);
             }
@@ -114,5 +123,13 @@ class CheckGpuStock extends Command
             'user' => self::USER_ID_TO_NOTIFY,
             'msg' => 'GPU in stock - ' . self::NEWEGG_BASE_URI . $link,
         ]);
+    }
+
+    private function getSelector($url)
+    {
+        if (strpos($url, self::BUNDLE_ITEM_URL_TEMPLATE) !== false) {
+            return '.grpDesc.boxConstraint .note';
+        }
+        return '.product-inventory strong';
     }
 }
