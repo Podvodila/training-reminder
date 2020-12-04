@@ -107,6 +107,7 @@ class CheckGpuStock extends Command
             $html = $response->getContent();
             $crawler = new Crawler($html);
             $stockInfo = $crawler->filter($this->getSelector($link))->text('node not found');
+            $this->info('Info - ' . $stockInfo);
             if (strpos($stockInfo, self::NEWEGG_STOCK_KEYWORD) !== false) {
                 $this->notify($link);
             }
